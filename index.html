@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diplodocus – El Fósil</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400;1,700&family=Jost:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --stone: #2a2318;
+    --rock: #3d3426;
+    --bone: #c8b48a;
+    --fossil: #8a7a5a;
+    --dust: #e8dcc0;
+    --white: #f5f0e8;
+    --rust: #9b4a22;
+    --copper: #c4713a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--stone);
+    font-family: 'Jost', sans-serif;
+    color: var(--dust);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* Textura piedra -->*/
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255,255,255,0.015) 2px,
+        rgba(255,255,255,0.015) 3px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 4px,
+        rgba(0,0,0,0.04) 4px,
+        rgba(0,0,0,0.04) 5px
+      );
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse at 0% 100%, rgba(155,74,34,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 100% 0%, rgba(138,122,90,0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    background: var(--rock);
+    border-top: 4px solid var(--bone);
+    border-bottom: 4px solid var(--bone);
+    padding: 38px 36px;
+    max-width: 490px;
+    width: 92%;
+    box-shadow: 0 0 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(200,180,138,0.15);
+    animation: carve 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes carve {
+    from { opacity: 0; clip-path: inset(20px); }
+    to { opacity: 1; clip-path: inset(0px); }
+  }
+
+  .museum-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(200,180,138,0.2);
+  }
+
+  .museum-text {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--fossil);
+    font-weight: 500;
+  }
+
+  .catalog-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--bone);
+    font-style: italic;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.4rem;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 0.9;
+    color: var(--bone);
+    margin-bottom: 4px;
+  }
+
+  .species-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--fossil);
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Ilustración fósil SVG */
+  .fossil-art {
+    margin-bottom: 24px;
+    border: 1px solid rgba(200,180,138,0.15);
+    border-radius: 4px;
+    background: rgba(0,0,0,0.25);
+    padding: 20px 12px 12px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .fossil-art::before {
+    content: 'SPECIMEN';
+    position: absolute;
+    top: 6px; left: 12px;
+    font-size: 0.55rem;
+    letter-spacing: 0.25em;
+    color: rgba(200,180,138,0.3);
+    font-weight: 700;
+  }
+
+  .timeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 20px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .tl-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 6px;
+    position: relative;
+  }
+
+  .tl-item.active {
+    background: var(--rust);
+  }
+
+  .tl-arrow {
+    color: var(--fossil);
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .tl-label {
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fossil);
+    font-weight: 500;
+    margin-bottom: 2px;
+  }
+
+  .tl-item.active .tl-label { color: #f0d0b8; }
+
+  .tl-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem;
+    color: var(--bone);
+    font-weight: 600;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .fact-item {
+    padding: 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 4px;
+    border-right: 3px solid var(--copper);
+  }
+
+  .fact-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--fossil);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  .fact-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: var(--dust);
+    font-weight: 600;
+  }
+
+  .description {
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: #b0a080;
+    margin-bottom: 24px;
+  }
+
+  .qr-section {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 16px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 4px;
+    border: 1px solid rgba(200,180,138,0.15);
+  }
+
+  #qrcode canvas, #qrcode img {
+    border: 3px solid var(--bone) !important;
+    border-radius: 2px;
+  }
+
+  .qr-info { flex: 1; }
+
+  .qr-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--fossil);
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+
+  .qr-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--bone);
+    margin-bottom: 3px;
+  }
+
+  .qr-url {
+    font-size: 0.68rem;
+    color: var(--fossil);
+    word-break: break-all;
+  }
+
+  .corner-deco {
+    position: absolute;
+    width: 20px; height: 20px;
+    border-color: var(--bone);
+    border-style: solid;
+    opacity: 0.4;
+  }
+  .corner-deco.tl { top: 14px; left: 14px; border-width: 2px 0 0 2px; }
+  .corner-deco.tr { top: 14px; right: 14px; border-width: 2px 2px 0 0; }
+  .corner-deco.bl { bottom: 14px; left: 14px; border-width: 0 0 2px 2px; }
+  .corner-deco.br { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="corner-deco tl"></div>
+  <div class="corner-deco tr"></div>
+  <div class="corner-deco bl"></div>
+  <div class="corner-deco br"></div>
+
+  <div class="museum-label">
+    <span class="museum-text">Paleontología · Jurásico</span>
+    <span class="catalog-num">CM 84 / YPM 1920</span>
+  </div>
+
+  <h1>El Fósil</h1>
+  <p class="species-name">Diplodocus carnegii · Morrison Formation</p>
+
+  <!-- Fósil SVG -->
+  <div class="fossil-art">
+    <svg width="400" height="110" viewBox="0 0 400 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Tierra/roca de fondo -->
+      <rect width="400" height="110" fill="url(#rock-grad)"/>
+      <defs>
+        <linearGradient id="rock-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#1a1408" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#2a2010" stop-opacity="0.8"/>
+        </linearGradient>
+      </defs>
+      <!-- Fisuras en la roca -->
+      <path d="M0 60 Q80 55 160 62 Q240 68 320 58 Q360 54 400 60" stroke="#1a1408" stroke-width="1" opacity="0.5"/>
+      <path d="M0 80 Q100 74 200 80 Q300 86 400 78" stroke="#1a1408" stroke-width="0.8" opacity="0.3"/>
+
+      <!-- ESQUELETO FÓSIL SIMPLIFICADO -->
+      <!-- Columna vertebral / vértebras -->
+      <g opacity="0.9">
+        <!-- Cola / vértebras caudales -->
+        <line x1="15" y1="58" x2="100" y2="56" stroke="#c8b48a" stroke-width="4" stroke-linecap="round"/>
+        <!-- Vértebras individuales cola -->
+        <ellipse cx="22" cy="58" rx="5" ry="3.5" fill="#b8a47a" stroke="#c8b48a" stroke-width="1"/>
+        <ellipse cx="36" cy="57" rx="5.5" ry="4" fill="#b8a47a" stroke="#c8b48a" stroke-width="1"/>
+        <ellipse cx="50" cy="57" rx="6" ry="4" fill="#b8a47a" stroke="#c8b48a" stroke-width="1"/>
+        <ellipse cx="65" cy="57" rx="6.5" ry="4.5" fill="#b8a47a" stroke="#c8b48a" stroke-width="1"/>
+        <ellipse cx="81" cy="56" rx="7" ry="5" fill="#b8a47a" stroke="#c8b48a" stroke-width="1"/>
+        <!-- Cuerpo / vértebras dorsales con espinas -->
+        <ellipse cx="100" cy="56" rx="9" ry="6" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <line x1="100" y1="50" x2="100" y2="38" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="118" cy="55" rx="9.5" ry="6.5" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <line x1="118" y1="49" x2="116" y2="36" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="137" cy="55" rx="10" ry="7" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <line x1="137" y1="48" x2="134" y2="33" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="157" cy="54" rx="10" ry="7" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <line x1="157" y1="47" x2="153" y2="32" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Costillas -->
+        <path d="M110 58 Q112 72 108 78" stroke="#c8b48a" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M122 57 Q126 74 122 82" stroke="#c8b48a" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M134 56 Q139 75 136 84" stroke="#c8b48a" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M146 55 Q151 76 149 86" stroke="#c8b48a" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <!-- Pelvis / cadera -->
+        <ellipse cx="175" cy="55" rx="14" ry="9" fill="#c0aa80" stroke="#c8b48a" stroke-width="2"/>
+        <path d="M168 64 Q168 80 162 90" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M182 64 Q184 80 180 90" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <!-- Escápulas / pecho -->
+        <ellipse cx="210" cy="52" rx="12" ry="8" fill="#c0aa80" stroke="#c8b48a" stroke-width="1.5"/>
+        <path d="M204 60 Q202 76 196 88" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <path d="M217 60 Q218 76 215 88" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <!-- Cuello vértebras -->
+        <ellipse cx="232" cy="50" rx="9" ry="6" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <line x1="232" y1="44" x2="232" y2="32" stroke="#c8b48a" stroke-width="2.5" stroke-linecap="round"/>
+        <ellipse cx="252" cy="46" rx="8" ry="5.5" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <line x1="252" y1="41" x2="254" y2="28" stroke="#c8b48a" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="270" cy="40" rx="7.5" ry="5" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <line x1="270" y1="35" x2="274" y2="22" stroke="#c8b48a" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="287" cy="33" rx="7" ry="4.5" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <ellipse cx="303" cy="25" rx="6.5" ry="4.5" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <ellipse cx="318" cy="18" rx="6" ry="4" fill="#b8a47a" stroke="#c8b48a" stroke-width="1.5"/>
+        <!-- Cráneo -->
+        <ellipse cx="340" cy="14" rx="20" ry="10" fill="#c0aa80" stroke="#c8b48a" stroke-width="2"/>
+        <!-- Órbita ocular -->
+        <circle cx="348" cy="11" r="4" fill="#1a1408" stroke="#c8b48a" stroke-width="1.5"/>
+        <!-- Dientes -->
+        <path d="M325 17 L328 20 L331 17 L334 20 L337 17" stroke="#c8b48a" stroke-width="1.2" fill="none"/>
+        <!-- Mandíbula -->
+        <path d="M322 17 Q330 25 340 23 Q350 22 355 18" stroke="#c8b48a" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </g>
+
+      <!-- Etiqueta del espécimen -->
+      <rect x="4" y="4" width="60" height="14" rx="2" fill="rgba(0,0,0,0.4)" stroke="#c8b48a" stroke-width="0.8" opacity="0.7"/>
+      <text x="8" y="14" font-family="monospace" font-size="7" fill="#c8b48a" opacity="0.8">DIPLODOCUS</text>
+    </svg>
+  </div>
+
+  <!-- Timeline etapas -->
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-label">Etapa 1</div>
+      <div class="tl-value">Huevo</div>
+    </div>
+    <div class="tl-arrow">›</div>
+    <div class="tl-item">
+      <div class="tl-label">Etapa 2</div>
+      <div class="tl-value">Adulto</div>
+    </div>
+    <div class="tl-arrow">›</div>
+    <div class="tl-item active">
+      <div class="tl-label">Etapa 3</div>
+      <div class="tl-value">Fósil</div>
+    </div>
+  </div>
+
+  <div class="facts">
+    <div class="fact-item">
+      <div class="fact-label">Descubierto</div>
+      <div class="fact-value">1877, EE. UU.</div>
+    </div>
+    <div class="fact-item">
+      <div class="fact-label">Nombrado por</div>
+      <div class="fact-value">O. C. Marsh, 1878</div>
+    </div>
+    <div class="fact-item">
+      <div class="fact-label">Estado</div>
+      <div class="fact-value">Extinto</div>
+    </div>
+    <div class="fact-item">
+      <div class="fact-label">Museos</div>
+      <div class="fact-value">Carnegie / NHM</div>
+    </div>
+  </div>
+
+  <p class="description">
+    Los fósiles del <em>Diplodocus</em> fueron hallados en la Formación Morrison de Wyoming. El magnate Andrew Carnegie financió las expediciones y donó réplicas de su esqueleto a museos de todo el mundo. Hoy es uno de los dinosaurios más estudiados y reconocibles del planeta.
+  </p>
+
+  <div class="qr-section">
+    <div id="qrcode"></div>
+    <div class="qr-info">
+      <div class="qr-label">Escanea para más info</div>
+      <div class="qr-title">El Registro Fósil</div>
+      <div class="qr-url" id="qr-url-text"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const url = "https://es.wikipedia.org/wiki/Diplodocus";
+  document.getElementById("qr-url-text").textContent = url;
+  new QRCode(document.getElementById("qrcode"), {
+    text: url,
+    width: 100,
+    height: 100,
+    colorDark: "#2a2318",
+    colorLight: "#e8dcc0",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+</script>
+</body>
+</html>
